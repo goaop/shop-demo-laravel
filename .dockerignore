@@ -1,0 +1,11 @@
+.git
+.env
+.phpunit.cache
+vendor
+lib
+app/Modules
+results
+bootstrap/cache/*.php
+storage/framework/aop*
+storage/framework/opcache-file
+storage/logs/*.log

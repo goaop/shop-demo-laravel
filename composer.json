@@ -1,0 +1,110 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "goaop/shop-demo-laravel",
+    "type": "project",
+    "description": "Reference Laravel shop application for Go! AOP 4 and goaop-laravel-bridge: aspects resolved through the Laravel container, and a reproducible benchmark of debug, production and prebuilt-cache modes",
+    "keywords": [
+        "aop",
+        "aspect-oriented-programming",
+        "laravel",
+        "php",
+        "benchmark",
+        "opcache"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^8.4",
+        "goaop/goaop-laravel-bridge": "^2.0",
+        "laravel/framework": "^13.17",
+        "laravel/tinker": "^3.0"
+    },
+    "require-dev": {
+        "fakerphp/faker": "^1.23",
+        "laravel/pail": "^1.2.5",
+        "laravel/pao": "^1.0.6",
+        "laravel/pint": "^1.27",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.6",
+        "phpunit/phpunit": "^12.5.12"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/",
+            "Lib\\": "lib/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "setup": [
+            "composer install",
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+            "@php artisan key:generate"
+        ],
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php artisan dev"
+        ],
+        "test": [
+            "@php artisan config:clear --ansi @no_additional_args",
+            "@php artisan test"
+        ],
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ],
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+        ],
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php artisan key:generate --ansi",
+            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
+            "@php artisan migrate --graceful --ansi"
+        ],
+        "pre-package-uninstall": [
+            "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
+        ],
+        "pre-autoload-dump": "@php bin/generate.php --if-missing",
+        "generate": "@php bin/generate.php",
+        "serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php -S 127.0.0.1:8080 -t public public/index.php"
+        ],
+        "bench": "bash bench/run-all.sh"
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": [
+                "goaop/goaop-laravel-bridge"
+            ]
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
+        },
+        "platform": {
+            "php": "8.4.1"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "scripts-descriptions": {
+        "setup": "Install the dependencies, create .env and the application key",
+        "generate": "Regenerate the modules (bin/generate.php [modules=40])",
+        "serve": "Start the built-in web server on http://127.0.0.1:8080/",
+        "bench": "Run every benchmark, results in results/"
+    }
+}
